@@ -8,12 +8,6 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use(function (err, req, res, next) {
-  console.error(err);
-  console.error(err.stack);
-  res.status(err.status || 500).send(err.message || 'Internal server error.');
-})
-
 const port = process.env.PORT || 80;
 
 
@@ -77,7 +71,11 @@ app.get('/has/:zipcode', async (req, res, next) =>{
 app.get('/display', async (req, res, next) =>{
   try {
     const zipcode = await Zipcode.findAll()
-    res.send(zipcode.zipcode)
+    const allZipCodes = []
+    zipcode.map(oneZip =>{
+      allZipCodes.push(oneZip.zipcode)
+    })
+    res.send(allZipCodes)
   } catch (error) {
     console.log(error)
   }
